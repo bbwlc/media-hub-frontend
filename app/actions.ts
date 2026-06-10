@@ -7,6 +7,8 @@ export type ProtectedResult = {
   message?: string
   error?: string
   status?: number
+  username?: string
+  role?: string
 }
 
 export async function callProtected(): Promise<ProtectedResult> {
@@ -31,7 +33,23 @@ export async function callProtected(): Promise<ProtectedResult> {
   if (!res.ok) {
     return { error: text, status: res.status }
   }
-  return { message: text, status: res.status }
+
+  // Also fetch /auth/me for structured user info
+  let username: string | undefined
+  let role: string | undefined
+  try {
+    const meRes = await fetch('http://localhost:8080/auth/me', {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-store',
+    })
+    if (meRes.ok) {
+      const me = await meRes.json()
+      username = me.username
+      role = me.role
+    }
+  } catch { /* non-critical */ }
+
+  return { message: text, status: res.status, username, role }
 }
 
 export type MeResult = {
