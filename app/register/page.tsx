@@ -2,6 +2,7 @@
 
 import { useActionState, useState, startTransition } from 'react'
 import { register } from './actions'
+import HomeLink from '../HomeLink'
 
 type FieldErrors = {
   username?: string
@@ -31,6 +32,7 @@ export default function RegisterPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900">
         <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm dark:bg-zinc-800 text-center">
+          <HomeLink />
           <div className="mb-4 text-4xl">📬</div>
           <h1 className="mb-2 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
             Check your email
@@ -76,6 +78,7 @@ export default function RegisterPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm dark:bg-zinc-800">
+        <HomeLink />
         <h1 className="mb-6 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           Create account
         </h1>

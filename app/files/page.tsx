@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import UploadForm from './UploadForm'
+import FileManager from './FileManager'
+import { getMyFiles, getMyShares, getSharedWithMe } from './actions'
 
 function decodeUsernameFromToken(token: string): string | null {
   try {
@@ -12,7 +13,7 @@ function decodeUsernameFromToken(token: string): string | null {
   }
 }
 
-export default async function ProfilePage() {
+export default async function FilesPage() {
   const cookieStore = await cookies()
   const token = cookieStore.get('token')?.value
 
@@ -21,16 +22,17 @@ export default async function ProfilePage() {
   const username = decodeUsernameFromToken(token)
   if (!username) redirect('/login')
 
-  let hasAvatar = false
-  try {
-    const res = await fetch(
-      `http://localhost:8080/users/${encodeURIComponent(username)}/avatar`,
-      { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' }
-    )
-    hasAvatar = res.ok
-  } catch {
-    hasAvatar = false
-  }
+  const [myFiles, myShares, sharedWithMe] = await Promise.all([
+    getMyFiles(),
+    getMyShares(),
+    getSharedWithMe(),
+  ])
 
-  return <UploadForm username={username} hasAvatar={hasAvatar} />
+  return (
+    <FileManager
+      myFiles={myFiles}
+      myShares={myShares}
+      sharedWithMe={sharedWithMe}
+    />
+  )
 }

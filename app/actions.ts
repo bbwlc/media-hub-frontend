@@ -34,6 +34,28 @@ export async function callProtected(): Promise<ProtectedResult> {
   return { message: text, status: res.status }
 }
 
+export type MeResult = {
+  username?: string
+  email?: string
+  role?: string
+}
+
+export async function getMe(): Promise<MeResult> {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('token')?.value
+  if (!token) return {}
+  try {
+    const res = await fetch('http://localhost:8080/auth/me', {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-store',
+    })
+    if (!res.ok) return {}
+    return await res.json()
+  } catch {
+    return {}
+  }
+}
+
 export async function signOut(): Promise<void> {
   const cookieStore = await cookies()
   const token = cookieStore.get('token')?.value

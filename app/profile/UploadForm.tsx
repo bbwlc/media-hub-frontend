@@ -2,13 +2,14 @@
 
 import { useActionState, useState, startTransition } from 'react'
 import { uploadProfilePicture } from './actions'
+import HomeLink from '../HomeLink'
 
 type Props = {
   username: string
-  hasProfilePicture: boolean
+  hasAvatar: boolean
 }
 
-export default function UploadForm({ username, hasProfilePicture }: Props) {
+export default function UploadForm({ username, hasAvatar }: Props) {
   const [state, formAction, pending] = useActionState(uploadProfilePicture, {})
   const [preview, setPreview] = useState<string | null>(null)
   const [fileError, setFileError] = useState<string | null>(null)
@@ -17,7 +18,7 @@ export default function UploadForm({ username, hasProfilePicture }: Props) {
   // On subsequent page loads the server URL is used instead.
   const displaySrc = state.success
     ? (preview ?? '/api/profile-picture')
-    : hasProfilePicture
+    : hasAvatar
       ? '/api/profile-picture'
       : null
 
@@ -37,6 +38,7 @@ export default function UploadForm({ username, hasProfilePicture }: Props) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm dark:bg-zinc-800">
+        <HomeLink />
         <h1 className="mb-1 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           Profile picture
         </h1>
@@ -88,7 +90,7 @@ export default function UploadForm({ username, hasProfilePicture }: Props) {
 
           <div className="flex flex-col gap-1">
             <label htmlFor="file" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              {hasProfilePicture || state.success ? 'Replace picture' : 'Choose image'}
+              {hasAvatar || state.success ? 'Replace picture' : 'Choose image'}
             </label>
             <input
               id="file"

@@ -4,6 +4,7 @@ import { useActionState, useState, startTransition } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import { login } from './actions'
+import HomeLink from '../HomeLink'
 
 type FieldErrors = {
   username?: string
@@ -44,6 +45,7 @@ function LoginForm() {
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm dark:bg-zinc-800">
 
+        <HomeLink />
         {activated && (
           <div className="mb-6 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400">
             Account activated — you can now sign in.

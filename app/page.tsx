@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import ProtectedTest from './ProtectedTest'
 import SignOutButton from './SignOutButton'
+import { getMe } from './actions'
 
 function decodeUsernameFromToken(token: string): string | null {
   try {
@@ -16,7 +17,21 @@ export default async function HomePage() {
   const cookieStore = await cookies()
   const token = cookieStore.get('token')?.value
   const username = token ? decodeUsernameFromToken(token) : null
-  const hasProfilePicture = !!cookieStore.get('profilePicture')?.value
+
+  let hasAvatar = false
+  if (token && username) {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/users/${encodeURIComponent(username)}/avatar`,
+        { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' }
+      )
+      hasAvatar = res.ok
+    } catch {
+      hasAvatar = false
+    }
+  }
+
+  const me = username ? await getMe() : {}
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900">
@@ -28,7 +43,7 @@ export default async function HomePage() {
         {username ? (
           <div className="mb-6">
             <div className="mb-3 flex items-center gap-3">
-              {hasProfilePicture ? (
+              {hasAvatar ? (
                 <img
                   src="/api/profile-picture"
                   alt="Profile picture"
@@ -39,10 +54,21 @@ export default async function HomePage() {
                   {username[0].toUpperCase()}
                 </div>
               )}
-              <p className="flex-1 text-sm text-zinc-500 dark:text-zinc-400">
-                Signed in as{' '}
-                <span className="font-medium text-zinc-700 dark:text-zinc-300">{username}</span>
-              </p>
+              <div className="flex flex-1 flex-col">
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  Signed in as{' '}
+                  <span className="font-medium text-zinc-700 dark:text-zinc-300">{username}</span>
+                </p>
+                {me.role && (
+                  <span className={`mt-0.5 inline-block w-fit rounded-full px-2 py-0.5 text-xs font-semibold ${
+                    me.role === 'ROLE_ADMIN'
+                      ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400'
+                      : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400'
+                  }`}>
+                    {me.role === 'ROLE_ADMIN' ? 'Admin' : 'User'}
+                  </span>
+                )}
+              </div>
               <SignOutButton />
             </div>
           </div>
@@ -64,6 +90,9 @@ export default async function HomePage() {
           </a>
           <a href="/profile" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50">
             → Profile picture
+          </a>
+          <a href="/files" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50">
+            → My Files
           </a>
         </nav>
 

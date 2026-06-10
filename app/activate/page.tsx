@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import HomeLink from '../HomeLink'
 
 type Props = {
   searchParams: Promise<{ token?: string }>
@@ -32,6 +33,7 @@ function ActivateResult({ success }: { success: boolean }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm dark:bg-zinc-800 text-center">
+        <HomeLink />
         {success ? (
           <>
             <div className="mb-4 text-4xl">✅</div>

@@ -51,7 +51,6 @@ export async function uploadProfilePicture(
     return { error: 'Upload failed. Please try again.' }
   }
 
-  cookieStore.set('profilePicture', file.name, { httpOnly: true, path: '/' })
   return { success: true, filename: file.name }
 }
 

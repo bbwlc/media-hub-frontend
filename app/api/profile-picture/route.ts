@@ -14,9 +14,8 @@ function decodeUsernameFromToken(token: string): string | null {
 export async function GET() {
   const cookieStore = await cookies()
   const token = cookieStore.get('token')?.value
-  const filename = cookieStore.get('profilePicture')?.value
 
-  if (!token || !filename) {
+  if (!token) {
     return new NextResponse(null, { status: 404 })
   }
 
@@ -28,7 +27,7 @@ export async function GET() {
   let res: Response
   try {
     res = await fetch(
-      `http://localhost:8080/download/${username}?file=${encodeURIComponent(filename)}`,
+      `http://localhost:8080/users/${encodeURIComponent(username)}/avatar`,
       { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' }
     )
   } catch {
