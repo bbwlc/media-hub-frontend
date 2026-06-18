@@ -30,7 +30,8 @@ export async function register(
   }
 
   switch (res.status) {
-    case 201:
+    case 201: // old backend: account created immediately
+    case 202: // new backend: double-opt-in pending
       return { success: true }
     case 400:
       return { error: 'Invalid registration data.' }

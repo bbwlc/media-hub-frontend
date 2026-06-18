@@ -94,6 +94,11 @@ export default async function HomePage() {
           <a href="/files" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50">
             → My Files
           </a>
+          {me.role === 'ROLE_ADMIN' && (
+            <a href="/admin/users" className="text-orange-600 hover:text-orange-800 dark:text-orange-400 dark:hover:text-orange-300">
+              → User Management
+            </a>
+          )}
         </nav>
 
         <div className="border-t border-zinc-100 pt-6 dark:border-zinc-700">
